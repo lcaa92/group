@@ -104,6 +104,6 @@ class ImoveisController extends Controller
     public function deletar($id){
     	$imovel = Imoveis::find($id);
     	$imovel->delete();
-    	return redirect()->route('lista_imoveis')->with('tipo','success')->with('msg','Imóvel atualizado com sucesso');
+    	return redirect()->route('lista_imoveis')->with('tipo','success')->with('msg','Imóvel excluído com sucesso');
     }
 }

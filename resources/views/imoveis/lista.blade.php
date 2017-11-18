@@ -18,8 +18,9 @@
                 <div class="panel-body">
 
                     @if (session('tipo') == 'success')
-                        <div class="alert alert-success">
-                            {{ session('msg') }}
+                        <div class="alert alert-success fade in alert-dismissable">
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
+                            <strong>Feito!</strong> {{ session('msg') }}
                         </div>
                     @endif
 
@@ -51,7 +52,7 @@
                                             <td>{{ $imovel->estado }}</td>
                                             <td>R${{ $imovel->exibePreco($imovel->preco) }}</td>
                                             <td>{{ $imovel->descricao }}</td>
-                                            <td><a href="{{ route('editar_imoveis', ['id'=>$imovel->id]) }}">Editar</a> | <a href="{{ route('deletar_imoveis', ['id'=>$imovel->id]) }}">Excluir</a></td>
+                                            <td><a href="{{ route('editar_imoveis', ['id'=>$imovel->id]) }}">Editar</a> | <a onclick="return ConfirmDelete()" href="{{ route('deletar_imoveis', ['id'=>$imovel->id]) }}">Excluir</a></td>
                                         </tr>
                                     @endforeach
                                 </tbody>   
@@ -92,4 +93,15 @@
         .removeClass( 'display' )
         .addClass('table table-striped table-bordered');
 </script>
+<script>
+
+                                  function ConfirmDelete()
+                                  {
+                                  var x = confirm("Você tem certeza que deseja excluir esse usuário?");
+                                  if (x)
+                                    return true;
+                                  else
+                                    return false;
+                                  }
+                                </script>
 @endsection
