@@ -126,4 +126,45 @@ class ImoveisController extends Controller
     	
     	return view('imoveis.visualizar', ['imovel'=>$imovel]);
     }
+
+    public function importarXML(){
+    	//se o caminho esteja hospedado noutro servidor
+		$url = "http://imob21.com.br/acc/imob21/publish/integracao.xml";
+
+		$data = file_get_contents($url);
+		$xml = simplexml_load_file($url)->Imoveis;
+
+		foreach ($xml->Imovel as $imovel) {
+			echo "Titulo: ".$imovel->TipoImovel." ".$imovel->QtdDormitorios." quartos <br />";
+			echo "Tipo: ".$imovel->TipoImovel."<br />";
+			echo "CEP: ".$imovel->CEP."<br />";
+			echo "Cidade: ".$imovel->Cidade."<br />";
+			echo "Estado: ".$imovel->UF."<br />";
+			echo "Bairro: ".$imovel->Bairro."<br />";
+			echo "Número: ".$imovel->Numero."<br />";
+			echo "Complemento: ".$imovel->Complemento."<br />";
+			echo "Preco: ".$imovel->PrecoVenda."<br />";
+			echo "Area: ".$imovel->AreaUtil."<br />";
+			echo "Quartos: ".$imovel->QtdDormitorios."<br />";
+			echo "Suites: ".$imovel->QtdSuites."<br />";
+			echo "Banheiros: ".$imovel->QtdBanheiros."<br />";
+			echo "Salas: ".$imovel->QtdSalas."<br />";
+			echo "Descricao: ".$imovel->DescricaoLocalizacao."<br />";
+			dd($imovel->Fotos);
+			echo "<br /><br />";
+		}
+    }
+
+    public function importarXML2(){
+    	$url = "http://imob21.com.br/acc/imob21/publish/integracao.xml";
+
+		// caso o caminho esteja hospedado no próprio servidor
+		// coloque o ficheiro no caminho: 'public/assets/xml/file.xml'
+		// $url = asset('assets/xml/file.xml');
+
+		$data = file_get_contents($url);
+		$xml = simplexml_load_file($url)->Imoveis;
+
+		dd($xml);
+    }
 }

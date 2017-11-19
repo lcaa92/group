@@ -31,6 +31,8 @@ Route::group(['middleware'=>'auth'], function(){
 		Route::post('/salvar', 'ImoveisController@salvar')->name('salvar_imoveis');
 		Route::get('/deletar/{id}', 'ImoveisController@deletar')->name('deletar_imoveis');
 		Route::get('/visualizar/{id}', 'ImoveisController@visualizar')->name('visualizar_imoveis');
+		Route::get('/importar/xml', 'ImoveisController@importarXML')->name('importar_imoveis');
+		Route::get('/importar/xml2', 'ImoveisController@importarXML2');
 	});
 
 });
