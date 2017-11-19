@@ -17,6 +17,12 @@
                             </ul>
                         </div>
                     @endif
+                    @if (session('tipo') == 'success')
+                        <div class="alert alert-success fade in alert-dismissable">
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
+                            <strong>Feito!</strong> {{ session('msg') }}
+                        </div>
+                    @endif
                     <form class="form-horizontal" method="POST" action="{{ isset($imovel) ? route('salvar_imoveis') : route('gravar_imoveis') }}" enctype="multipart/form-data">
                         {{ csrf_field() }}
                         <div class="form-group">
@@ -34,8 +40,8 @@
                                 <label>Selecione um tipo de imóvel</label>
                                 <select name="tipo" class="form-control" required>
                                     <option value="">Selecione um tipo de imóvel</option>
-                                    <option value="APARTAMENTO" {{ isset($imovel) ? $imovel->tipo == 'APARTAMENTO' ? 'selected' : '' : old('tipo') == 'APARTAMENTO' ? 'selected' : '' }}>APARTAMENTO</option>
-                                    <option value="CASA" {{ isset($imovel) ? $imovel->tipo == 'CASA' ? 'selected' : '' : old('tipo') == 'CASAA' ? 'selected' : '' }}>CASA</option>
+                                    <option value="Apartamento" {{ isset($imovel) ? $imovel->tipo == 'Apartamento' ? 'selected' : '' : old('tipo') == 'APARTAApartamentoMENTO' ? 'selected' : '' }}>APARTAMENTO</option>
+                                    <option value="Casa" {{ isset($imovel) ? $imovel->tipo == 'Casa' ? 'selected' : '' : old('tipo') == 'Casa' ? 'selected' : '' }}>CASA</option>
                                 </select>
 
                                 @if ($errors->has('tipo'))
@@ -191,8 +197,8 @@
                             </div>
 
                            <div class="col-md-3">
-                                <label>Imagem </label>
-                                <input id="imagem" type="file" class="form-control" name="imagem" value="{{ old('imagem') }}" {{ isset($imovel) ? '' : 'required' }}>
+                                <label>Imagem Principal</label>
+                                <input id="imagem" type="file" class="form-control" name="imagem"  {{ isset($imovel) ? '' : 'required' }}>
                                 @if (isset($imovel))
                                 <small>Deixe em branco para não alterar</small>
                                 @endif
@@ -228,6 +234,49 @@
                             </div>    
                         </div>
                     </form>
+                    @isset($imovel)
+                    <hr>
+                    <div class="col-md-12 text-center">
+                        <label>Adicionar Fotos</label>
+                    </div>
+                    <form class="form-horizontal" method="POST" action="{{ route('adicionar_fotos_imoveis') }}" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <label>Fotos</label>
+                                <input id="imagem" type="file" class="form-control" name="imagens[]" multiple required>
+
+                                @if ($errors->has('imagem'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('imagem') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                {{ csrf_field() }}
+                                <input type="hidden" name="id_imovel" value="{{ $imovel->id }}">
+                                <button type="submit" class="form-control btn btn-primary">
+                                    Adicionar fotos
+                                </button>
+                            </div>
+                        </div>
+
+                        <hr>
+                    <div class="col-md-12 text-center">
+                        <label>Fotos</label>
+                    </div>
+                        @if (count($imovel->fotos) == 0)
+                            Nenhuma foto cadastrada
+                        @else
+                            @foreach ($imovel->fotos as $foto)
+                            <div class="col-md-2">
+                                <img style="width: 250px; height: 200px;" src="{{ asset('imagens/imoveis/'.$foto->id_imovel.'/'.$foto->id.'/'.$foto->imagem) }}" class="img-responsive img-square">    
+                            </div>
+                            
+                            @endforeach
+                        @endif
+                    @endisset
                 </div>
             </div>
         </div>

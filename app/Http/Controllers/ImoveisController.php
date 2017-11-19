@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Imoveis;
+use App\Fotos;
+use Storage;
 
 class ImoveisController extends Controller
 {
@@ -19,8 +21,10 @@ class ImoveisController extends Controller
 
     public function gravar(Request $request){
     	$imovel = new Imoveis();
+    	
     	$imagem = $request->file('imagem');
     	
+
     	$request->merge(['imagem' => $imagem->getClientOriginalName()]);
     	$this->validate($request, $imovel->rules);
     	
@@ -41,12 +45,16 @@ class ImoveisController extends Controller
     		'salas' => $request->salas,
     		'garagem' => $request->garagem,
     		'descricao' => $request->descricao,
-    		'imagem'=>$request->imagem->getClientOriginalName()
     	]);
-
+   	
     	$destinationPath = 'imagens/imoveis/'.$imovel->id;
-        $imagem->move($destinationPath,$imagem->getClientOriginalName());
-
+    	$foto = Fotos::create([
+    			'id_imovel'=>$imovel->id,
+    			'imagem' => $imagem->getClientOriginalName(),
+    			'principal' => '1'
+    		]);
+        	$imagem->move($destinationPath,$imagem->getClientOriginalName());
+    	
     	return redirect()->route('lista_imoveis')->with('tipo','success')->with('msg','Imóvel cadastrado com sucesso');
     }
 
@@ -61,18 +69,19 @@ class ImoveisController extends Controller
     	$this->validate($request, $imovel->rules);
 
     	if ($request->imagem){
+    		$foto = Fotos::where('id_imovel', '=', $imovel->id)->where('principal', '=', '1')->first();
 			$imagem = $request->file('imagem');
 
-			$filename = 'imagens/imoveis/'.$imovel->id.'/'.$imovel->imagem;
+			$filename = 'imagens/imoveis/'.$imovel->id.'/'.$foto->imagem;
 
 			if (file_exists($filename)) {
 			    unlink($filename);
 			} 
 
-    		$imovel->fill([
+    		$foto->fill([
     			'imagem'=>$imagem->getClientOriginalName()
     		]);
-    		$imovel->save();
+    		$foto->save();
 
 
 			$destinationPath = 'imagens/imoveis/'.$imovel->id;
@@ -103,6 +112,13 @@ class ImoveisController extends Controller
 
     public function deletar($id){
     	$imovel = Imoveis::find($id);
+
+    	$fotos = Fotos::where('id_imovel', '=', $imovel->id)->get();
+
+    	foreach ($fotos as $foto) {
+    		$foto->delete();
+    	}
+
     	$imovel->delete();
     	return redirect()->route('lista_imoveis')->with('tipo','success')->with('msg','Imóvel excluído com sucesso');
     }
@@ -128,43 +144,74 @@ class ImoveisController extends Controller
     }
 
     public function importarXML(){
-    	//se o caminho esteja hospedado noutro servidor
 		$url = "http://imob21.com.br/acc/imob21/publish/integracao.xml";
 
-		$data = file_get_contents($url);
 		$xml = simplexml_load_file($url)->Imoveis;
 
 		foreach ($xml->Imovel as $imovel) {
-			echo "Titulo: ".$imovel->TipoImovel." ".$imovel->QtdDormitorios." quartos <br />";
-			echo "Tipo: ".$imovel->TipoImovel."<br />";
-			echo "CEP: ".$imovel->CEP."<br />";
-			echo "Cidade: ".$imovel->Cidade."<br />";
-			echo "Estado: ".$imovel->UF."<br />";
-			echo "Bairro: ".$imovel->Bairro."<br />";
-			echo "Número: ".$imovel->Numero."<br />";
-			echo "Complemento: ".$imovel->Complemento."<br />";
-			echo "Preco: ".$imovel->PrecoVenda."<br />";
-			echo "Area: ".$imovel->AreaUtil."<br />";
-			echo "Quartos: ".$imovel->QtdDormitorios."<br />";
-			echo "Suites: ".$imovel->QtdSuites."<br />";
-			echo "Banheiros: ".$imovel->QtdBanheiros."<br />";
-			echo "Salas: ".$imovel->QtdSalas."<br />";
-			echo "Descricao: ".$imovel->DescricaoLocalizacao."<br />";
-			dd($imovel->Fotos);
-			echo "<br /><br />";
+			$imo = Imoveis::create([
+				'codigo' => $imovel->CodigoImovel,
+				'titulo' => $imovel->TipoImovel." ".$imovel->QtdDormitorios." quartos",
+	    		'tipo' => $imovel->TipoImovel,
+	    		'cep' => $imovel->CEP,
+	    		'cidade' => $imovel->Cidade,
+	    		'estado' => $imovel->UF,
+	    		'bairro' => $imovel->Bairro,
+	    		'numero' => $imovel->Numero,
+	    		'complemento' => $imovel->Complemento,
+	    		'preco' => $imovel->PrecoVenda,
+	    		'area' => $imovel->AreaUtil,
+	    		'qnt_dormitorios' => $imovel->QtdDormitorios,
+	    		'qnt_suites' => $imovel->QtdSuites,
+	    		'banheiros' => $imovel->QtdBanheiros,
+	    		'salas' => $imovel->QtdSalas,
+	    		'garagem' => $imovel->QtdVagas,
+	    		'descricao' => $imovel->DescricaoLocalizacao,
+			]);
+			
+
+			foreach ($imovel->Fotos->Foto as $foto) {
+				$contents = file_get_contents($foto->URLArquivo);
+ 				$ext = str_replace('.','',strrchr($foto->URLArquivo, '.'));
+				$name = $foto->NomeArquivo.'.'.$ext;
+
+				$ft = Fotos::create([
+					'imagem'=>$name,
+					'principal'=>$foto->Principal,
+					'id_imovel'=>$imo->id
+				]);
+
+				Storage::disk('imagens')->put('imoveis/'.$imo->id.'/'.$ft->id.'/'.$name, $contents);
+			}
 		}
+		return redirect()->route('lista_imoveis')->with('tipo','success')->with('msg','XML importado com sucesso');
     }
 
-    public function importarXML2(){
-    	$url = "http://imob21.com.br/acc/imob21/publish/integracao.xml";
 
-		// caso o caminho esteja hospedado no próprio servidor
-		// coloque o ficheiro no caminho: 'public/assets/xml/file.xml'
-		// $url = asset('assets/xml/file.xml');
+    public function addFotos(Request $request){
+    	$foto = new Fotos();
+    	$imagens = $request->file('imagens');
+    	$request->merge(['principal' => '0']);
 
-		$data = file_get_contents($url);
-		$xml = simplexml_load_file($url)->Imoveis;
+    	foreach ($request->imagens as $key => $imagem) {
+    		$request->merge(['imagem' => $imagem]);
+    		print_r( $request->imagem);
+    		$this->validate($request, $foto->rules);
+    	}
+    	
+    	foreach ($request->imagens as $key => $imagem) {
+    		$foto = Fotos::create([
+    			'id_imovel'=>$request->id_imovel,
+    			'principal'=>$request->principal,
+    			'imagem'=>$imagem->getClientOriginalName(),
+    		]);
 
-		dd($xml);
+    		$destinationPath = 'imagens/imoveis/'.$request->id_imovel.'/'.$foto->id;
+        	$imagem->move($destinationPath,$imagem->getClientOriginalName());
+    	}
+
+    	return redirect()->route('editar_imoveis', ['id'=>$request->id_imovel])->with('tipo','success')->with('msg','Fotos adicionadas com sucesso');
     }
+
+
 }

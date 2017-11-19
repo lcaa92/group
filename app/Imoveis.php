@@ -7,12 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 class Imoveis extends Model
 {
     protected $fillable = [
-        'titulo', 'tipo', 'cep', 'cidade', 'estado', 'bairro', 'numero', 'complemento', 'preco', 'area', 'qnt_dormitorios', 'qnt_suites', 'banheiros', 'salas', 'garagem', 'descricao', 'imagem'
+        'codigo','titulo', 'tipo', 'cep', 'cidade', 'estado', 'bairro', 'numero', 'complemento', 'preco', 'area', 'qnt_dormitorios', 'qnt_suites', 'banheiros', 'salas', 'garagem', 'descricao', 'imagem'
     ];
 
     public $rules = [
 		'titulo' => 'required|max:255|min:3',
-		'tipo' => 'required|in:APARTAMENTO,CASA',
+		'tipo' => 'required|in:Apartamento,Casa',
 		'cep' => 'required|max:20|min:3',
 		'cidade' => 'required|max:100|min:3',
 		'estado' => 'required|max:100',
@@ -39,5 +39,10 @@ class Imoveis extends Model
 
     public function exibePreco($value){
     	return number_format($value,2,',','.');
+    }
+
+    public function fotos()
+    {
+        return $this->hasMany('App\Fotos', 'id_imovel');
     }
 }
