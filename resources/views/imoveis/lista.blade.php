@@ -12,9 +12,6 @@
                     </div>
                 </div>
 
-                
-
-
                 <div class="panel-body">
 
                     @if (session('tipo') == 'success')
@@ -94,14 +91,13 @@
         .addClass('table table-striped table-bordered');
 </script>
 <script>
-
-                                  function ConfirmDelete()
-                                  {
-                                  var x = confirm("Você tem certeza que deseja excluir esse usuário?");
-                                  if (x)
-                                    return true;
-                                  else
-                                    return false;
-                                  }
-                                </script>
+  function ConfirmDelete()
+  {
+  var x = confirm("Você tem certeza que deseja excluir esse imóvel?");
+  if (x)
+    return true;
+  else
+    return false;
+  }
+</script>
 @endsection

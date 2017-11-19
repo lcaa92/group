@@ -106,4 +106,14 @@ class ImoveisController extends Controller
     	$imovel->delete();
     	return redirect()->route('lista_imoveis')->with('tipo','success')->with('msg','Imóvel excluído com sucesso');
     }
+
+    public function buscaPorCodigo(Request $request){
+    	$imovel = Imoveis::find($request->id);
+
+    	if (!$imovel){
+    		$imovel = null;
+    	}
+    	
+    	return view('imoveis.visualizar', ['imovel'=>$imovel]);
+    }
 }

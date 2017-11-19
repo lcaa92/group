@@ -125,8 +125,8 @@
                             </div>
 
                             <div class="col-md-2">
-                                <label>Área</label>
-                                <input id="area" type="text" class="form-control" name="area" value="{{ isset($imovel) ? old('area', $imovel->area) : old('area') }}">
+                                <label>Área <small>m²</small></label>
+                                <input id="area" type="number" min="0" class="form-control" name="area" value="{{ isset($imovel) ? old('area', $imovel->area) : old('area') }}">
 
                                 @if ($errors->has('area'))
                                     <span class="help-block">

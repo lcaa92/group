@@ -17,6 +17,8 @@ Route::get('/', function () {
 
 Auth::routes();
 
+Route::post('/imoveis/busca/', 'ImoveisController@buscaPorCodigo')->name('busca_codigo_imoveis');
+
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::group(['middleware'=>'auth'], function(){

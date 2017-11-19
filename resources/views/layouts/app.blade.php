@@ -8,7 +8,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>{{ config('app.name', 'Teste Group') }}</title>
 
     <!-- Styles -->
 
@@ -33,7 +33,7 @@
 
                     <!-- Branding Image -->
                     <a class="navbar-brand" href="{{ url('/') }}">
-                        {{ config('app.name', 'Laravel') }}
+                        {{ config('app.name', 'Teste Group') }}
                     </a>
                 </div>
 
@@ -46,6 +46,13 @@
                     <!-- Right Side Of Navbar -->
                     <ul class="nav navbar-nav navbar-right">
                         <!-- Authentication Links -->
+                            <form class="navbar-form navbar-left" action="{{ route('busca_codigo_imoveis') }}" method="POST">
+                                {{ csrf_field() }}
+                                <div class="form-group">
+                                  <input type="text" class="form-control" name="id" placeholder="Busca por código" required>
+                                </div>
+                                <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+                              </form>
                         @guest
                             <li><a href="{{ route('login') }}">Login</a></li>
                             <li><a href="{{ route('register') }}">Register</a></li>
