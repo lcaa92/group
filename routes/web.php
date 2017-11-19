@@ -30,6 +30,7 @@ Route::group(['middleware'=>'auth'], function(){
 		Route::get('/editar/{id}', 'ImoveisController@editar')->name('editar_imoveis');
 		Route::post('/salvar', 'ImoveisController@salvar')->name('salvar_imoveis');
 		Route::get('/deletar/{id}', 'ImoveisController@deletar')->name('deletar_imoveis');
+		Route::get('/visualizar/{id}', 'ImoveisController@visualizar')->name('visualizar_imoveis');
 	});
 
 });

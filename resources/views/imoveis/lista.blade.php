@@ -49,7 +49,7 @@
                                             <td>{{ $imovel->estado }}</td>
                                             <td>R${{ $imovel->exibePreco($imovel->preco) }}</td>
                                             <td>{{ $imovel->descricao }}</td>
-                                            <td><a href="{{ route('editar_imoveis', ['id'=>$imovel->id]) }}">Editar</a> | <a onclick="return ConfirmDelete()" href="{{ route('deletar_imoveis', ['id'=>$imovel->id]) }}">Excluir</a></td>
+                                            <td><a href="{{ route('visualizar_imoveis', ['id'=>$imovel->id]) }}">Visualizar</a> | <a href="{{ route('editar_imoveis', ['id'=>$imovel->id]) }}">Editar</a> | <a onclick="return ConfirmDelete()" href="{{ route('deletar_imoveis', ['id'=>$imovel->id]) }}">Excluir</a></td>
                                         </tr>
                                     @endforeach
                                 </tbody>   

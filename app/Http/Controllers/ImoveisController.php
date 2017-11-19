@@ -116,4 +116,14 @@ class ImoveisController extends Controller
     	
     	return view('imoveis.visualizar', ['imovel'=>$imovel]);
     }
+
+    public function visualizar($id){
+    	$imovel = Imoveis::find($id);
+
+    	if (!$imovel){
+    		$imovel = null;
+    	}
+    	
+    	return view('imoveis.visualizar', ['imovel'=>$imovel]);
+    }
 }
