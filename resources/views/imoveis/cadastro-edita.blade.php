@@ -5,7 +5,19 @@
     <div class="row">
         <div class="col-md-12">
             <div class="panel panel-default">
-                <div class="panel-heading">Cadastrar novo imóvel</div>
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <a href="{{ route('lista_imoveis') }}">Voltar para lista</a>
+                        </div>
+                        <div class="col-md-6 text-center">
+                            Cadastrar novo imóvel    
+                        </div>
+                        <div class="col-md-3">
+                            
+                        </div>
+                    </div>
+                </div>
 
                 <div class="panel-body">
                     @if ($errors->any())
@@ -227,10 +239,15 @@
                             <div class="col-md-12">
                                  @if (isset($imovel))
                                     <input type="hidden" name="id" value="{{ $imovel->id }}">
+                                    <button type="submit" class="form-control btn btn-primary">
+                                        Atualizar
+                                    </button>
+                                @else
+                                    <button type="submit" class="form-control btn btn-primary">
+                                        Cadastrar
+                                    </button>
                                 @endif
-                                <button type="submit" class="form-control btn btn-primary">
-                                    Cadastrar
-                                </button>
+                                
                             </div>    
                         </div>
                     </form>
@@ -270,7 +287,8 @@
                             Nenhuma foto cadastrada
                         @else
                             @foreach ($imovel->fotos as $foto)
-                            <div class="col-md-2">
+                            <div class="col-md-2 text-center">
+                                <a href="{{ route('excluir_fotos_imoveis', ['id'=>$foto->id]) }}" class="btn btn-danger btn-sm"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>Excluir foto</a>
                                 <img style="width: 250px; height: 200px;" src="{{ asset('imagens/imoveis/'.$foto->id_imovel.'/'.$foto->id.'/'.$foto->imagem) }}" class="img-responsive img-square">    
                             </div>
                             

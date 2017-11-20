@@ -29,7 +29,7 @@
                     
                         <div class="row">
                             <div class="col-md-2">                            
-                                <label>Cod:</label> {{ $imovel->id }}
+                                <label>ID/Cod:</label> {{ $imovel->id  }} / {{ empty($imovel->codigo) ? 'N/A' : $imovel->codigo }}
                             </div>
                             <div class="col-md-4">                            
                                 <label>Título:</label> {{ $imovel->titulo }}
@@ -89,9 +89,15 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-12">                            
-                                <label>Foto:</label> <img src="{{ asset('/imagens/imoveis/'.$imovel->id.'/'.$imovel->imagem) }}">
+                            <div class="col-md-12 text-center">                            
+                                <label>Fotos</label>
                             </div>
+                            @foreach ($imovel->fotos as $foto)
+                            <div class="col-md-2 text-center">
+                                <img style="width: 250px; height: 200px;" src="{{ asset('imagens/imoveis/'.$foto->id_imovel.'/'.$foto->id.'/'.$foto->imagem) }}" class="img-responsive img-square">    
+                            </div>
+                            
+                            @endforeach
                         </div>
 
                     @endif

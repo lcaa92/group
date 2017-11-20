@@ -47,13 +47,14 @@ class ImoveisController extends Controller
     		'descricao' => $request->descricao,
     	]);
    	
-    	$destinationPath = 'imagens/imoveis/'.$imovel->id;
+    	
     	$foto = Fotos::create([
     			'id_imovel'=>$imovel->id,
     			'imagem' => $imagem->getClientOriginalName(),
     			'principal' => '1'
     		]);
-        	$imagem->move($destinationPath,$imagem->getClientOriginalName());
+    	$destinationPath = 'imagens/imoveis/'.$imovel->id.'/'.$foto->id;
+        $imagem->move($destinationPath,$imagem->getClientOriginalName());
     	
     	return redirect()->route('lista_imoveis')->with('tipo','success')->with('msg','Imóvel cadastrado com sucesso');
     }
@@ -84,7 +85,7 @@ class ImoveisController extends Controller
     		$foto->save();
 
 
-			$destinationPath = 'imagens/imoveis/'.$imovel->id;
+			$destinationPath = 'imagens/imoveis/'.$imovel->id.'/'.$foto->id;
         	$imagem->move($destinationPath,$imagem->getClientOriginalName());
     	}
 
@@ -107,7 +108,7 @@ class ImoveisController extends Controller
     		'descricao' => $request->descricao
     	]);
     	$imovel->save();
-    	return redirect()->route('lista_imoveis')->with('tipo','success')->with('msg','Imóvel atualizado com sucesso');
+    	return redirect()->route('editar_imoveis', ['id'=>$imovel->id])->with('tipo','success')->with('msg','Foto atualizada com sucesso');
     }
 
     public function deletar($id){
@@ -115,16 +116,25 @@ class ImoveisController extends Controller
 
     	$fotos = Fotos::where('id_imovel', '=', $imovel->id)->get();
 
+		$dir = 'imagens/imoveis/'.$imovel->id;
     	foreach ($fotos as $foto) {
-    		$foto->delete();
+    		$dir_foto = $dir.'/'.$foto->id;
+	    	$filename = $dir_foto.'/'.$foto->imagem;
+	    	
+			if (file_exists($filename)) {
+			    unlink($filename);
+			    rmdir($dir_foto);
+			}
+			$foto->delete();
     	}
-
+    	rmdir($dir);
+    	
     	$imovel->delete();
     	return redirect()->route('lista_imoveis')->with('tipo','success')->with('msg','Imóvel excluído com sucesso');
     }
 
     public function buscaPorCodigo(Request $request){
-    	$imovel = Imoveis::find($request->id);
+    	$imovel = Imoveis::where('id', '=', $request->id)->orWhere('codigo', '=', $request->id)->first();
 
     	if (!$imovel){
     		$imovel = null;
@@ -213,5 +223,18 @@ class ImoveisController extends Controller
     	return redirect()->route('editar_imoveis', ['id'=>$request->id_imovel])->with('tipo','success')->with('msg','Fotos adicionadas com sucesso');
     }
 
+    public function excluirFotos($id){
+    	$foto = Fotos::find($id);
+
+    	$dir = 'imagens/imoveis/'.$foto->id_imovel.'/'.$foto->id;
+    	$filename = $dir.'/'.$foto->imagem;
+    	
+			if (file_exists($filename)) {
+			    unlink($filename);
+			    rmdir($dir);
+			    $foto->delete();
+			}
+    	return redirect()->route('editar_imoveis', ['id'=>$foto->id_imovel])->with('tipo','success')->with('msg','Foto excluída com sucesso');
+    }
 
 }

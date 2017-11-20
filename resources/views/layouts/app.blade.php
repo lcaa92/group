@@ -49,7 +49,7 @@
                             <form class="navbar-form navbar-left" action="{{ route('busca_codigo_imoveis') }}" method="POST">
                                 {{ csrf_field() }}
                                 <div class="form-group">
-                                  <input type="text" class="form-control" name="id" placeholder="Busca por código" required>
+                                  <input type="text" class="form-control" name="id" placeholder="Busca por código ou ID" required>
                                 </div>
                                 <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
                               </form>

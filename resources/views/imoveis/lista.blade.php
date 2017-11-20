@@ -29,7 +29,7 @@
                             <table id="table_lista_imoveis" class="table display">
                                 <thead>
                                     <tr>
-                                        <th>Código</th>
+                                        <th>ID / Código</th>
                                         <th>Título</th>
                                         <th>Tipo</th>
                                         <th>Cidade</th>
@@ -42,7 +42,7 @@
                                 <tbody>
                                     @foreach ($imoveis as $imovel)
                                         <tr>
-                                            <td>{{ $imovel->id }}</td>
+                                            <td>{{ $imovel->id }} / {{ empty($imovel->codigo) ? 'N/A' : $imovel->codigo }}</td>
                                             <td>{{ $imovel->titulo }}</td>
                                             <td>{{ $imovel->tipo }}</td>
                                             <td>{{ $imovel->cidade }}</td>
